@@ -196,7 +196,7 @@ while not Player.IsGhost:
         FindTile()
         Misc.Pause(500)
         Attack()
-        if Player.GetSkillValue('Fletching') == 100
+        if Player.GetSkillValue('Fletching') == 100:
             Fletch = False
         if Fletch:
             fletch()
