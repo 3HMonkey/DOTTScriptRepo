@@ -38,7 +38,8 @@ def FindTile():
 #equip da Axzor
 def EquipAxe():
     if not Player.CheckLayer("LeftHand"):
-        Axe = Items.FindByID(0x0F43, -1, -1)
+        #Axe = Items.FindByID(0x0F43, -1, -1)
+        Axe = Items.FindByID(0x0F4B, -1, -1)
         Player.EquipItem(Axe)
         Misc.Pause(1000)
         return Axe
@@ -79,6 +80,7 @@ def Attack():
             Misc.Pause(500)
             Healz()
             Misc.Pause(250)
+    Misc.Pause(1500)
     loot()
 
 #stayin alive
@@ -109,6 +111,7 @@ def loot():
 #make bows
 def fletch():
     while Items.BackpackCount(0x1bdd, 0) > 9 and Items.BackpackCount(0x1022, 0) > 0:
+        Attack()
         tool = Items.FindByID(0x1022, -1, Player.Backpack.Serial)
         if Player.GetSkillValue('Fletching') < 80:
             Items.UseItem(tool)
@@ -189,10 +192,12 @@ while not Player.IsGhost:
         loc = line
         Axe = EquipAxe()
         Misc.SendMessage(str(linecount)+ ". " + line, 0)
-        Attack()
         Pf(cloc, loc)
         FindTile()
         Misc.Pause(500)
+        Attack()
+        if Player.GetSkillValue('Fletching') == 100
+            Fletch = False
         if Fletch:
             fletch()
     bank()
