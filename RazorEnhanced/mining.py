@@ -55,7 +55,7 @@ def smelt():
 
 #makes move shovels and kits
 def kit(tool):
-	Misc.SendMessage("getting tool", 0)
+    Misc.SendMessage("getting tool", 0)
     #find kit
     kit = Items.FindByID(0x1eb8, -1, Player.Backpack.Serial)
     #make kit if running low
@@ -86,7 +86,7 @@ def kit(tool):
     Gumps.SendAction(949095101, 0)
     #make tongs
     if tool == "tongs":
-        while Items.BackpackCount(0xfbb) == 0:
+        while Items.BackpackCount(0xfbb) < 2:
         	Misc.SendMessage("making tongs", 0)
             Items.UseItem(kit)
             Gumps.WaitForGump(949095101, 700)
