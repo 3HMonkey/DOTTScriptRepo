@@ -160,6 +160,7 @@ def fight():
 #have the skill breakpoints for lower than 100
 def smith():
     skill = Player.GetSkillValue('Blacksmith')
+    bsitems = [0x1413, 0x1414]
     if skill < 106.4:
         makegump = 16
         ingotcost = 10
@@ -190,18 +191,19 @@ def smith():
         if startingot == Items.BackpackCount(0x1bf2, 0):
             break
         #recycle your items, still need item IDs for all levels, just have gorget.
-        while Items.BackpackCount(0x1413, -1) > 0:
-            startingot = Items.BackpackCount(0x1bf2, 0)
-            tongs = kit(tool="tongs")
-            Items.UseItem(tongs)
-            Gumps.WaitForGump(949095101, 3000)
-            Gumps.SendAction(949095101, 14)
-            Misc.Pause(1000)
-            Target.TargetExecute(Items.FindByID(0x1413, -1, -1))
-            Misc.Pause(1000)
-            if startingot == Items.BackpackCount(0x1bf2, 0):
-                break
-            Gumps.SendAction(949095101, 0)
+        for i in bsitems:
+            while Items.BackpackCount(i, -1) > 0:
+                startingot = Items.BackpackCount(0x1bf2, 0)
+                tongs = kit(tool="tongs")
+                Items.UseItem(tongs)
+                Gumps.WaitForGump(949095101, 3000)
+                Gumps.SendAction(949095101, 14)
+                Misc.Pause(1000)
+                Target.TargetExecute(Items.FindByID(i, -1, -1))
+                Misc.Pause(1000)
+                if startingot == Items.BackpackCount(0x1bf2, 0):
+                    break
+                Gumps.SendAction(949095101, 0)
     Gumps.SendAction(949095101, 0)
     Gumps.SendAction(949095101, 0)
 
