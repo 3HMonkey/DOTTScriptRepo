@@ -174,7 +174,7 @@ def smith():
     if skill >= 118.8:
         makegump = 30
         ingotcost = 25
-    while Items.BackpackCount(0x1bf2, 0) >= ingotcost:
+    while Items.BackpackCount(0x1bf2, 0) >= ingotcost + 10:
         startingot = Items.BackpackCount(0x1bf2, 0)
         tongs = kit(tool="tongs")
         Misc.SendMessage("found tongs, making " + str(makegump), 0)
