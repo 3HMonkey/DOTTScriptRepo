@@ -72,7 +72,7 @@ def kit(tool):
     Gumps.SendAction(949095101, 0)
     #make shovel
     if tool == "shovel":
-        while Items.BackpackCount(0xf39) == 0:
+        while Items.BackpackCount(0xf39) < 2:
         	Misc.SendMessage("making shovel", 0)
             Items.UseItem(kit)
             Gumps.WaitForGump(949095101, 700)
