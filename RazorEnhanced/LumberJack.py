@@ -189,6 +189,7 @@ while not Player.IsGhost:
         loc = line
         Axe = EquipAxe()
         Misc.SendMessage(str(linecount)+ ". " + line, 0)
+        Attack()
         Pf(cloc, loc)
         FindTile()
         Misc.Pause(500)
