@@ -160,7 +160,6 @@ def fight():
 #have the skill breakpoints for lower than 100
 def smith():
     skill = Player.GetSkillValue('Blacksmith')
-    bsitems = [0x1413, 0x1414]
     if skill < 106.4:
         makegump = 16
         ingotcost = 10
@@ -190,7 +189,8 @@ def smith():
         #not near a forge/anvil, dont get stuck forever
         if startingot == Items.BackpackCount(0x1bf2, 0):
             break
-        #recycle your items, still need item IDs for all levels, just have gorget.
+        #recycle your items, still need item IDs for all levels, gorget, gloves and arms so far.
+        bsitems = [0x1413, 0x1414, 0x1410]
         for i in bsitems:
             while Items.BackpackCount(i, -1) > 0:
                 startingot = Items.BackpackCount(0x1bf2, 0)
