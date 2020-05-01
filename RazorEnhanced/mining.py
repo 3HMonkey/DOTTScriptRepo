@@ -45,13 +45,13 @@ def move(cloc, loc):
 
 #smelt ore to save weight
 def smelt():
-	startorecount = Items.BackpackCount(0x19b9, -1)
+    startorecount = Items.BackpackCount(0x19b9, -1)
     while Items.BackpackCount(0x19b9, -1) != 0:
         ore = Items.FindByID(0x19b9, -1, Player.Backpack.Serial)
         Items.UseItem(ore)
         Misc.Pause(1000)
         if Items.BackpackCount(0x19b9, -1) == startorecount:
-        	break
+            break
 
 #makes move shovels and kits
 def kit(tool):
@@ -60,7 +60,7 @@ def kit(tool):
     kit = Items.FindByID(0x1eb8, -1, Player.Backpack.Serial)
     #make kit if running low
     while Items.BackpackCount(0x1EB8, -1) < 3:
-    	Misc.SendMessage("making kit", 0)
+        Misc.SendMessage("making kit", 0)
         Items.UseItem(kit)
         Gumps.WaitForGump(949095101, 700)
         Gumps.SendAction(949095101, 8)
@@ -73,7 +73,7 @@ def kit(tool):
     #make shovel
     if tool == "shovel":
         while Items.BackpackCount(0xf39) < 2:
-        	Misc.SendMessage("making shovel", 0)
+            Misc.SendMessage("making shovel", 0)
             Items.UseItem(kit)
             Gumps.WaitForGump(949095101, 700)
             Gumps.SendAction(949095101, 8)
@@ -87,7 +87,7 @@ def kit(tool):
     #make tongs
     if tool == "tongs":
         while Items.BackpackCount(0xfbb) < 2:
-        	Misc.SendMessage("making tongs", 0)
+            Misc.SendMessage("making tongs", 0)
             Items.UseItem(kit)
             Gumps.WaitForGump(949095101, 700)
             Gumps.SendAction(949095101, 8)
@@ -110,11 +110,12 @@ def shovel():
 
 #bank loot when getting full
 def bank(x, y):
+    global townrunebookgump, miningrunebookgump
     #recall to bank
     while Player.Position.X == x and Player.Position.Y == y:
         Items.UseItem(runebook)
         Gumps.WaitForGump(1431013363, 700)
-        Gumps.SendAction(1431013363, runebookgump)
+        Gumps.SendAction(1431013363, townrunebookgump)
         Misc.Pause(1000)
     
     #move warez over
@@ -133,7 +134,7 @@ def bank(x, y):
     #restock
     regs = [0xf86, 0xf7a, 0xf7b]
     for i in regs:
-        while Items.BackpackCount(i, -1):
+        while Items.BackpackCount(i, -1) < 6:
             reg = Items.FindByID(i, -1, bankregbag)
             Items.Move(reg.Serial, Player.Backpack.Serial, 4)
             Misc.Pause(500)
@@ -190,16 +191,16 @@ def smith():
             break
         #recycle your items, still need item IDs for all levels, just have gorget.
         while Items.BackpackCount(0x1413, -1) > 0:
-        	startingot = Items.BackpackCount(0x1bf2, 0)
-        	tongs = kit(tool="tongs")
-        	Items.UseItem(tongs)
-		    Gumps.WaitForGump(949095101, 3000)
-		    Gumps.SendAction(949095101, 14)
-		    Misc.Pause(1000)
-		    Target.TargetExecute(Items.FindByID(0x1413, -1, -1))
-		    Misc.Pause(1000)
-		    if startingot == Items.BackpackCount(0x1bf2, 0):
-            	break
+            startingot = Items.BackpackCount(0x1bf2, 0)
+            tongs = kit(tool="tongs")
+            Items.UseItem(tongs)
+            Gumps.WaitForGump(949095101, 3000)
+            Gumps.SendAction(949095101, 14)
+            Misc.Pause(1000)
+            Target.TargetExecute(Items.FindByID(0x1413, -1, -1))
+            Misc.Pause(1000)
+            if startingot == Items.BackpackCount(0x1bf2, 0):
+                break
             Gumps.SendAction(949095101, 0)
     Gumps.SendAction(949095101, 0)
     Gumps.SendAction(949095101, 0)
@@ -220,7 +221,7 @@ while not Player.IsGhost:
         Misc.SendMessage(str(linecount)+ ". " + line, 0)
         move(cloc, loc)
         mine(shovel=shovel())
-        if Player.Weight > 300 and Items.BackpackCount(0x19b9, -1) == 0:
+        if Player.Weight > 330 and Items.BackpackCount(0x19b9, -1) == 0:
             bank(Player.Position.X, Player.Position.Y)
         if smithing:
             smith()
