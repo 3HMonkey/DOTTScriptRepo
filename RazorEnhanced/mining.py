@@ -112,11 +112,12 @@ def shovel():
 def bank(x, y):
     global townrunebookgump, miningrunebookgump
     #recall to bank
-    while Player.Position.X == x and Player.Position.Y == y:
-        Items.UseItem(runebook)
-        Gumps.WaitForGump(1431013363, 700)
-        Gumps.SendAction(1431013363, townrunebookgump)
-        Misc.Pause(1000)
+    if Player.Position.X != 1435 and Player.Position.Y != 1679:
+        while Player.Position.X == x and Player.Position.Y == y:
+            Items.UseItem(runebook)
+            Gumps.WaitForGump(1431013363, 700)
+            Gumps.SendAction(1431013363, townrunebookgump)
+            Misc.Pause(1000)
     
     #move warez over
     loots = [0x1bf2, 0xf16, 0xf10, 0xf25, 0xf26, 0xf2d, 0xf21, 0xf15, 0xf19, 0xf13]
@@ -139,6 +140,21 @@ def bank(x, y):
             Items.Move(reg.Serial, Player.Backpack.Serial, 4)
             Misc.Pause(500)
 
+    #mask
+    while Player.GetItemOnLayer('Head') == None:
+        mask = Items.FindByID(0x141B, -1, Player.Bank.Serial)
+        Player.EquipItem(mask)
+        Misc.Pause(500)
+
+    #fresh restock after dead
+    while Items.BackpackCount(0x1EB8, -1) == 0:
+        kit = Items.FindByID(0x1eb8, -1, bankbag)
+        Items.Move(kit, Player.Backpack.Serial, 0)
+        Misc.Pause(1000)
+    while Items.BackpackCount(0x1BF2, 0) == 0:
+        kit = Items.FindByID(0x1BF2, 0, bankbag)
+        Items.Move(kit, Player.Backpack.Serial, 30)
+        Misc.Pause(1000)
 
     #current bank locaiton to check for successful recall
     bx = Player.Position.X
@@ -190,7 +206,7 @@ def smith():
         if startingot == Items.BackpackCount(0x1bf2, 0):
             break
         #recycle your items, still need item IDs for all levels, gorget, gloves and arms so far.
-        bsitems = [0x1413, 0x1414, 0x1410]
+        bsitems = [0x1413, 0x1414, 0x1410, 0x1411]
         for i in bsitems:
             while Items.BackpackCount(i, -1) > 0:
                 startingot = Items.BackpackCount(0x1bf2, 0)
@@ -207,16 +223,56 @@ def smith():
     Gumps.SendAction(949095101, 0)
     Gumps.SendAction(949095101, 0)
 
+#dead
+def dead():
+    while Player.IsGhost:
+        linecount = 0
+        for line in loclist_od:
+            linecount = linecount + 1
+            cloc = str(Player.Position)
+            loc = line
+            Misc.SendMessage(str(linecount)+ ". " + line, 0)
+            move(cloc, loc)
+            Gumps.SendAction(2957810225, 1)
+            while Player.Position.Y == 1611:
+                Gumps.SendAction(2957810225, 1)
+                for f in range(2):
+                    Player.Walk('West')
+                for f in range(2):
+                    Player.Walk('East')
+                while not Player.IsGhost:
+                    linecount = 0
+                    for line in loclist_ob:
+                        linecount = linecount + 1
+                        cloc = str(Player.Position)
+                        loc = line
+                        Misc.SendMessage(str(linecount)+ ". " + line, 0)
+                        move(cloc, loc)
+                    bank(Player.Position.X, Player.Position.Y)
+                    break
+
+
 #Main script
 #load rail
 with open('orc_cave.txt', 'r') as file:
     loclist = file.read().splitlines()
 file.close()
 
+with open('orc_cave_dead.txt', 'r') as file:
+    loclist_od = file.read().splitlines()
+file.close()
+
+with open('brit_portal_dead.txt', 'r') as file:
+    loclist_ob = file.read().splitlines()
+file.close()
+
 #run program
-while not Player.IsGhost:
+#while not Player.IsGhost:
+while True:
     linecount = 0
     for line in loclist:
+        if Player.IsGhost:
+            dead()
         linecount = linecount + 1
         cloc = str(Player.Position)
         loc = line
@@ -224,6 +280,8 @@ while not Player.IsGhost:
         move(cloc, loc)
         mine(shovel=shovel())
         if Player.Weight > 330 and Items.BackpackCount(0x19b9, -1) == 0:
+            bank(Player.Position.X, Player.Position.Y)
+        if Player.Position.X == 1435 and Player.Position.Y == 1679:
             bank(Player.Position.X, Player.Position.Y)
         if smithing:
             smith()
