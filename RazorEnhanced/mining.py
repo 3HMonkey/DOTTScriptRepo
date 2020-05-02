@@ -140,21 +140,25 @@ def bank(x, y):
             Items.Move(reg.Serial, Player.Backpack.Serial, 4)
             Misc.Pause(500)
 
-    #mask
-    while Player.GetItemOnLayer('Head') == None:
-        mask = Items.FindByID(0x141B, -1, Player.Bank.Serial)
-        Player.EquipItem(mask)
-        Misc.Pause(500)
+    #restock after dead
+    if Player.GetItemOnLayer('Head') == None:
+        #mask
+        while Player.GetItemOnLayer('Head') == None:
+            mask = Items.FindByID(0x141B, -1, Player.Bank.Serial)
+            Player.EquipItem(mask)
+            Misc.Pause(1000)
 
-    #fresh restock after dead
-    while Items.BackpackCount(0x1EB8, -1) == 0:
-        kit = Items.FindByID(0x1eb8, -1, bankbag)
-        Items.Move(kit, Player.Backpack.Serial, 0)
-        Misc.Pause(1000)
-    while Items.BackpackCount(0x1BF2, 0) == 0:
-        kit = Items.FindByID(0x1BF2, 0, bankbag)
-        Items.Move(kit, Player.Backpack.Serial, 30)
-        Misc.Pause(1000)
+        #bootstrap tink kit
+        while Items.BackpackCount(0x1EB8, -1) == 0:
+            kit = Items.FindByID(0x1eb8, -1, bankbag)
+            Items.Move(kit, Player.Backpack.Serial, 0)
+            Misc.Pause(1000)
+
+        #bootstrap ore
+        while Items.BackpackCount(0x1BF2, 0) == 0:
+            kit = Items.FindByID(0x1BF2, 0, bankbag)
+            Items.Move(kit, Player.Backpack.Serial, 30)
+            Misc.Pause(1000)
 
     #current bank locaiton to check for successful recall
     bx = Player.Position.X
@@ -206,7 +210,7 @@ def smith():
         if startingot == Items.BackpackCount(0x1bf2, 0):
             break
         #recycle your items, still need item IDs for all levels, gorget, gloves and arms so far.
-        bsitems = [0x1413, 0x1414, 0x1410, 0x1411]
+        bsitems = [0x1413, 0x1414, 0x1410, 0x1411, 0x1415]
         for i in bsitems:
             while Items.BackpackCount(i, -1) > 0:
                 startingot = Items.BackpackCount(0x1bf2, 0)
@@ -276,12 +280,12 @@ while True:
         linecount = linecount + 1
         cloc = str(Player.Position)
         loc = line
-        Misc.SendMessage(str(linecount)+ ". " + line, 0)
-        move(cloc, loc)
-        mine(shovel=shovel())
         if Player.Weight > 330 and Items.BackpackCount(0x19b9, -1) == 0:
             bank(Player.Position.X, Player.Position.Y)
         if Player.Position.X == 1435 and Player.Position.Y == 1679:
             bank(Player.Position.X, Player.Position.Y)
+        Misc.SendMessage(str(linecount)+ ". " + line, 0)
+        move(cloc, loc)
+        mine(shovel=shovel())
         if smithing:
             smith()
