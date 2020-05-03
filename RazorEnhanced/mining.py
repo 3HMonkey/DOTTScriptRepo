@@ -2,6 +2,7 @@
 #init modules and vars
 #
 import math
+import datetime
 #do you want to work smithing at same time? if yes, then true.
 smithing = True
 #runebook serial
@@ -25,7 +26,7 @@ def mine(shovel):
             Target.TargetExecute(Player.Position.X, Player.Position.Y, Player.Position.Z)
             Misc.Pause(2000)
             #need to fix to check if in range to be smelted
-            smelt()
+        smelt()
 
 #move to next location
 def move(cloc, loc):
@@ -255,6 +256,11 @@ def smith():
 
 #dead
 def dead():
+    if Player.IsGhost:
+        file = "tree_locs_moon2.txt"
+        f = open(file, "a")
+        f.write(datetime.datetime.now() +"\n")
+        f.close()
     while Player.IsGhost:
         linecount = 0
         while Gumps.CurrentGump() == 523845830:
