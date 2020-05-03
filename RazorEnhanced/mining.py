@@ -1,6 +1,7 @@
 #mining macro - currently only tested on orc cave rail
-#init vars
+#init modules and vars
 #
+import math
 #do you want to work smithing at same time? if yes, then true.
 smithing = True
 #runebook serial
@@ -45,6 +46,7 @@ def move(cloc, loc):
 
 #smelt ore to save weight
 def smelt():
+    findore()
     startorecount = Items.BackpackCount(0x19b9, -1)
     while Items.BackpackCount(0x19b9, -1) != 0:
         ore = Items.FindByID(0x19b9, -1, Player.Backpack.Serial)
@@ -69,6 +71,8 @@ def kit(tool):
         Misc.Pause(1500)
         Gumps.SendAction(949095101, 0)
         Gumps.SendAction(949095101, 0)
+        if Player.IsGhost:
+            dead()
     Gumps.SendAction(949095101, 0)
     #make shovel
     if tool == "shovel":
@@ -82,6 +86,8 @@ def kit(tool):
             Misc.Pause(1500)
             Gumps.SendAction(949095101, 0)
             Gumps.SendAction(949095101, 0)
+            if Player.IsGhost:
+                dead()
         return Items.FindByID(0xf39, -1, Player.Backpack.Serial)
     Gumps.SendAction(949095101, 0)
     #make tongs
@@ -96,6 +102,8 @@ def kit(tool):
             Misc.Pause(1500)
             Gumps.SendAction(949095101, 0)
             Gumps.SendAction(949095101, 0)
+            if Player.IsGhost:
+                dead()
         return Items.FindByID(0xfbb, -1, Player.Backpack.Serial)
     Gumps.SendAction(949095101, 0)
 
@@ -169,7 +177,21 @@ def bank(x, y):
         Gumps.SendAction(1431013363, miningrunebookgump)
         Misc.Pause(1000)
 
-    
+#find ore on ground(why not, free ore)
+def findore():
+    fil = Items.Filter()
+    fil.Enabled = True
+    fil.Name = 'ore'
+    fil.RangeMax = 2
+    fil.OnGround = 1
+    ore = Items.ApplyFilter(fil)
+    if ore is not None:
+        for o in ore:
+            nummoveable = math.floor((Player.MaxWeight - Player.Weight) / 12)
+            Items.Move(o, Player.Backpack.Serial, nummoveable)
+            Misc.Pause(750)
+
+
 
 #not needed now, will add some defence logic later
 def fight():
@@ -206,6 +228,8 @@ def smith():
         Gumps.SendAction(949095101, makegump)
         Misc.Pause(2500)
         Gumps.SendAction(949095101, 0)
+        if Player.IsGhost:
+            dead()
         #not near a forge/anvil, dont get stuck forever
         if startingot == Items.BackpackCount(0x1bf2, 0):
             break
@@ -213,6 +237,8 @@ def smith():
         bsitems = [0x1413, 0x1414, 0x1410, 0x1411, 0x1415]
         for i in bsitems:
             while Items.BackpackCount(i, -1) > 0:
+                if Player.IsGhost:
+                    dead()
                 startingot = Items.BackpackCount(0x1bf2, 0)
                 tongs = kit(tool="tongs")
                 Items.UseItem(tongs)
@@ -231,6 +257,9 @@ def smith():
 def dead():
     while Player.IsGhost:
         linecount = 0
+        while Gumps.CurrentGump() == 523845830:
+            Gumps.SendAction(523845830, 1)
+            Misc.Pause(500)
         for line in loclist_od:
             linecount = linecount + 1
             cloc = str(Player.Position)
