@@ -2,7 +2,7 @@
 TreeStaticID = [3221, 3222, 3225, 3227, 3228, 3229, 3210, 3238, 3240, 3242, 3243, 3267, 3268, 3272, 3273, 3274, 3275, 3276, 3277, 3280, 3283, 3286, 3288, 3290, 3293, 3296, 3299, 3302, 3320, 3323, 3326, 3329, 3365, 3367, 3381, 3383, 3384, 3394, 3395, 3417, 3440, 3461, 3476, 3478, 3480, 3482, 3484, 3486, 3488, 3490, 3492, 3496]
 rscoord = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1],[-2,-2],[-2,2],[2,-2],[2,2]]
 #do you want to skill feltching? set to true
-Fletch = True
+Fletch = False
 #bag in bank to put logs, can just set to Player.Bank.Serial for root of bank
 logbag = 0x4065b7bd
 #bag in bank where bow tools are, not needed if not fletching
@@ -33,7 +33,9 @@ def FindTile():
         tile = Statics.GetStaticsTileInfo(x, y, z)
         for f in tile:
             if f.StaticID in TreeStaticID:
-                Chop(Axe, x, y, f.StaticZ, f.StaticID)
+                for r in range(3):
+                    Chop(Axe, x, y, f.StaticZ, f.StaticID)
+                    
 
 #equip da Axzor
 def EquipAxe():
@@ -163,9 +165,9 @@ def bank():
         gold = Items.FindByID(0x0eed, -1, Player.Backpack.Serial)
         Items.Move(gold.Serial, Player.Bank, 0)
         Misc.Pause(500)
-    while Items.BackpackCount(0x0e21, -1) < 20:
+    while Items.BackpackCount(0x0e21, -1) < 40:
         aid = Items.FindByID(0x0e21, -1, Player.Bank.Serial)
-        Items.Move(aid.Serial, Player.Backpack.Serial, 20 - Items.BackpackCount(0x0e21, -1))
+        Items.Move(aid.Serial, Player.Backpack.Serial, 40 - Items.BackpackCount(0x0e21, -1))
         Misc.Pause(500)
     if Fletch:
         Items.UseItem(fletchtool)
