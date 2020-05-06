@@ -29,4 +29,5 @@ UO.ClientFilters.Weather.Enable();
 
 Load startup routine this way:
 
-https://imgur.com/5OokoKd
+
+![Imgur Image](https://i.imgur.com/5OokoKd.png)
