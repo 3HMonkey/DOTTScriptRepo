@@ -1,12 +1,8 @@
 # Infusion Scripts
 
-Todo:
-
-- Write readme :)
-- add initial scripts
 
 Point these scripts in a "startup.csx" file like:
-```
+```csharp
 //Load scripts
 #load "UOScripts\HealPets.csx"
 #load "UOScripts\DropOffStuff.csx"
@@ -30,3 +26,7 @@ Misc.Log("\nWrite ,help and press enter if you want get information about all av
 UO.ClientFilters.Light.Enable();
 UO.ClientFilters.Weather.Enable();
 ```
+
+Load startup routine this way:
+
+https://imgur.com/5OokoKd
