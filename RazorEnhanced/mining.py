@@ -4,7 +4,7 @@
 import math
 import datetime
 #do you want to work smithing at same time? if yes, then true.
-smithing = True
+smithing = False
 #runebook serial
 runebook = 0x4102c6ae
 #runebook bank rune gump location, use inspector to find
@@ -17,16 +17,21 @@ bankbag = 0x40e9e4e1
 bankregbag = 0x4205b75d
 
 #mine tile youre standing on
-def mine(shovel):    
-    #try mining 3 times since you cant check journal
-    for t in range(2):
-        if Player.Weight < 360:
-            Items.UseItem(shovel)
-            Misc.Pause(500)
-            Target.TargetExecute(Player.Position.X, Player.Position.Y, Player.Position.Z)
-            Misc.Pause(2000)
-            #need to fix to check if in range to be smelted
+def mine(shovel):
+    Journal.Clear()
+    while True:
         smelt()
+        if Player.Weight > 360:
+            break
+        Items.UseItem(shovel)
+        Target.WaitForTarget(5000)
+        Target.TargetExecute(Player.Position.X, Player.Position.Y, Player.Position.Z)
+        Misc.Pause(1500)
+        if Journal.Search("There is no metal here to mine") or Journal.Search("You have worn out your tool!"):
+            Journal.Clear()
+            break
+        if Player.IsGhost:
+            dead()
 
 #move to next location
 def move(cloc, loc):
@@ -39,21 +44,21 @@ def move(cloc, loc):
     while str(localcloc) != str(loc):
         localcloc = str(Player.Position)
         Player.PathFindTo(x, y, z)
-        Misc.Pause(750)
+        Misc.Pause(1000)
         retrycount = retrycount + 1
         #dont get stuck trying to get there forever
-        if retrycount > 7:
+        if retrycount > 5:
             break
 
 #smelt ore to save weight
 def smelt():
     findore()
-    startorecount = Items.BackpackCount(0x19b9, -1)
     while Items.BackpackCount(0x19b9, -1) != 0:
         ore = Items.FindByID(0x19b9, -1, Player.Backpack.Serial)
         Items.UseItem(ore)
-        Misc.Pause(1000)
-        if Items.BackpackCount(0x19b9, -1) == startorecount:
+        Misc.Pause(750)
+        if Journal.Search("You are not near a forge"):
+            Journal.Clear()
             break
 
 #makes move shovels and kits
@@ -139,6 +144,10 @@ def bank(x, y):
     while Items.BackpackCount(0xeed, -1) > 0:
         gold = Items.FindByID(0xeed, -1, Player.Backpack.Serial)
         Items.Move(gold.Serial, Player.Bank, 0)
+        Misc.Pause(500)
+    while Items.BackpackCount(0x141B, -1) > 0:
+        helm = Items.FindByID(0x141B, -1, Player.Backpack.Serial)
+        Items.Move(helm.Serial, Player.Bank, 0)
         Misc.Pause(500)
 
     #restock
